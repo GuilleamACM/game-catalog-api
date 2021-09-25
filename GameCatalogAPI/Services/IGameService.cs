@@ -14,7 +14,7 @@ namespace GameCatalogAPI.Services
 
         Task<GameViewModel> Insert(GameInputModel game);
 
-        Task Update(Guid id, GameViewModel game);
+        Task Update(Guid id, GameInputModel game);
 
         Task Update(Guid id, double price);
 

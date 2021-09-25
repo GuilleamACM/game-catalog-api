@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using GameCatalogAPI.InputModel;
+using GameCatalogAPI.Services;
 using GameCatalogAPI.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,40 +13,97 @@ namespace GameCatalogAPI.Controllers.V1
     [ApiController]
     public class GamesController : ControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<List<GameViewModel>>> Get()
+        private readonly IGameService m_gameService;
+
+        public GamesController(IGameService gameService)
         {
-            return Ok();
+            m_gameService = gameService;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GameViewModel>>> Get([FromQuery, Range(1, int.MaxValue)] int page = 1, [FromQuery, Range(1, 50)] int quantity = 5)
+        {
+            var games = await m_gameService.Get(page, quantity);
+            
+            if (games.Count == 0)
+                return NoContent();
+            
+            return Ok(games);
         }
         
         [HttpGet("{gameId:guid}")]
-        public async Task<ActionResult<GameViewModel>> Get(Guid gameId)
+        public async Task<ActionResult<GameViewModel>> Get([FromRoute] Guid gameId)
         {
+            var game = await m_gameService.Get(gameId);
+
+            if (game == null)
+                return NoContent();
+            
             return Ok();
         }
 
         [HttpPost]
-        public async Task<ActionResult<GameViewModel>> InsertGame(GameInputModel game)
+        public async Task<ActionResult<GameViewModel>> InsertGame([FromBody] GameInputModel gameInputModel)
         {
-            return Ok();
+            try
+            {
+                var game = await m_gameService.Insert(gameInputModel);
+
+                return Ok(game);
+            }
+            //catch (GameRegisterException ex)
+            catch(Exception ex)
+            {
+                return UnprocessableEntity("A game with this Name and Developer has already been registered");
+            }
         }
 
         [HttpPut("{gameId:guid}")]
-        public async Task<ActionResult> UpdateGame(Guid gameId, GameInputModel game)
+        public async Task<ActionResult> UpdateGame([FromRoute] Guid gameId, [FromBody] GameInputModel gameInputModel)
         {
-            return Ok();
+            try
+            {
+                await m_gameService.Update(gameId, gameInputModel);
+
+                return Ok();
+            }
+            catch(Exception ex)
+            //catch(GameNotRegisteredException ex)
+            {
+                return NotFound("This Game does not exists");
+            }
         }
         
         [HttpPatch("{gameId:guid}/price/{price:double}")]
-        public async Task<ActionResult> UpdateGame(Guid gameId, double price)
+        public async Task<ActionResult> UpdateGame([FromRoute] Guid gameId, [FromRoute] double price)
         {
-            return Ok();
+            try
+            {
+                await m_gameService.Update(gameId, price);
+
+                return Ok();
+            }
+            //catch(GameNotRegisteredException ex)
+            catch(Exception ex)
+            {
+                return NotFound("This Game does not exists");
+            }
         }
 
         [HttpDelete("{gameId:guid}")]
-        public async Task<ActionResult> DeleteGame(Guid gameId)
+        public async Task<ActionResult> DeleteGame([FromRoute] Guid gameId)
         {
-            return Ok();
+            try
+            {
+                await m_gameService.Remove(gameId);
+
+                return Ok();
+            }
+            //catch(GameNotRegisteredException ex)
+            catch(Exception ex)
+            {
+                return NotFound("This Game does not exists");
+            }
         }
     }
 }
