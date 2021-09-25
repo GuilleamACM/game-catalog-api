@@ -43,7 +43,8 @@ namespace GameCatalogAPI.Repositories
 
         public Task Update(Game game)
         {
-            throw new NotImplementedException();
+            _games[game.Id] = game;
+            return Task.CompletedTask;
         }
 
         public Task Remove(Guid id)

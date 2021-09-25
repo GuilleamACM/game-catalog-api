@@ -40,7 +40,7 @@ namespace GameCatalogAPI.Controllers.V1
             if (game == null)
                 return NoContent();
             
-            return Ok();
+            return Ok(game);
         }
 
         [HttpPost]
