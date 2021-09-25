@@ -5,13 +5,13 @@ using GameCatalogAPI.Entities;
 
 namespace GameCatalogAPI.Repositories
 {
-    public interface IGameRepository
+    public interface IGameRepository : IDisposable
     {
         Task<List<Game>> Get(int page, int quantity);
 
         Task<Game> Get(Guid id);
 
-        Task<Game> Get(string name, string developer);
+        Task<List<Game>> Get(string name, string developer);
         
         Task<Game> Insert(Game game);
         

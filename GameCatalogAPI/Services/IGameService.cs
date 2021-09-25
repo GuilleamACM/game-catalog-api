@@ -6,7 +6,7 @@ using GameCatalogAPI.ViewModel;
 
 namespace GameCatalogAPI.Services
 {
-    public interface IGameService
+    public interface IGameService : IDisposable
     {
         Task<List<GameViewModel>> Get(int page, int quantity);
 
