@@ -13,7 +13,7 @@ namespace GameCatalogAPI.Repositories
 
         Task<List<Game>> Get(string name, string developer);
         
-        Task<Game> Insert(Game game);
+        Task Insert(Game game);
         
         Task Update(Game game);
 
