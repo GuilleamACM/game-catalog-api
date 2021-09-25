@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using GameCatalogAPI.Exceptions;
 using GameCatalogAPI.InputModel;
 using GameCatalogAPI.Services;
 using GameCatalogAPI.ViewModel;
@@ -51,8 +52,7 @@ namespace GameCatalogAPI.Controllers.V1
 
                 return Ok(game);
             }
-            //catch (GameRegisterException ex)
-            catch(Exception ex)
+            catch(GameRegisteredException ex)
             {
                 return UnprocessableEntity("A game with this Name and Developer has already been registered");
             }
@@ -67,8 +67,7 @@ namespace GameCatalogAPI.Controllers.V1
 
                 return Ok();
             }
-            catch(Exception ex)
-            //catch(GameNotRegisteredException ex)
+            catch(GameNotRegisteredException ex)
             {
                 return NotFound("This Game does not exists");
             }
@@ -83,8 +82,7 @@ namespace GameCatalogAPI.Controllers.V1
 
                 return Ok();
             }
-            //catch(GameNotRegisteredException ex)
-            catch(Exception ex)
+            catch(GameNotRegisteredException ex)
             {
                 return NotFound("This Game does not exists");
             }
@@ -99,8 +97,7 @@ namespace GameCatalogAPI.Controllers.V1
 
                 return Ok();
             }
-            //catch(GameNotRegisteredException ex)
-            catch(Exception ex)
+            catch(GameNotRegisteredException ex)
             {
                 return NotFound("This Game does not exists");
             }
